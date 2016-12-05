@@ -1,0 +1,38 @@
+#!/usr/bin/perl -w
+
+use File::Copy;
+use List::Util qw(min max);
+
+&make_graphs_cumulative;
+exit;
+
+sub make_graphs_cumulative {
+  @r2_array = ();
+  open FILE, "Results.txt";
+  while (<FILE>) {
+   chomp;
+    @line = split (/\t/,$_);
+    $r2 = $line[4]; #This should be changed to the column you want
+    #print "@line\n$r2\n"; #Check you are looking at the right column
+    #<STDIN>;
+    push(@r2_array, $r2);
+  }
+  close FILE;
+  open FILE, ">>Cumulative_graph.fasta";
+  print FILE "Percent\tCumulative_percent\n";
+  $start = 0;
+  while ($start <= 1) { #change this range to 100 if you are working with percent
+    $count = 0;
+    foreach $value (@r2_array) {
+     if ($value <= $start) {
+       ++$count;
+     }
+     else {}
+    }
+    $percent = ($count/($#r2_array + 1))*100;
+    $start_percent = $start*100;
+    #print FILE "$start_percent\t$percent\n";
+    $start = $start + 0.01;
+  }
+  close FILE;
+}
